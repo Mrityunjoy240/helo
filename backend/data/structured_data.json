@@ -1,0 +1,325 @@
+{
+  "college": {
+    "name": "Dr. B.C. Roy Engineering College (BCREC)",
+    "full_name": "Dr. Bhabani Charan Roy Engineering College",
+    "location": "Durgapur, West Bengal, India",
+    "address": "Jemua Road, Fuljhore, Durgapur - 713206, West Bengal",
+    "established": 2000,
+    "affiliation": "MAKAUT (Maulana Abul Kalam Azad University of Technology)",
+    "accreditation": ["NAAC Grade B+", "NBA Accredited", "AICTE Approved"],
+    "campus_area": "25 acres",
+    "ranking": {
+      "collegedunia_2025": 440,
+      "nirf_2025": "201-250"
+    }
+  },
+  "courses": {
+    "btech": {
+      "name": "B.Tech (Bachelor of Technology)",
+      "duration": "4 years (8 semesters)",
+      "total_fees": "₹4.49 Lakhs - ₹6.1 Lakhs",
+      "first_year_fees": "₹1.09 Lakhs - ₹1.69 Lakhs",
+      "branches": {
+        "cse_aiml": {
+          "full_name": "Computer Science & Engineering (AI/ML Specialization)",
+          "seats": 60,
+          "cutoff_general": "78,000 - 99,000",
+          "placement_rate": "90-95%",
+          "avg_salary": "₹5-7 LPA",
+          "highest_salary": "₹15-20 LPA"
+        },
+        "cse": {
+          "full_name": "Computer Science & Engineering",
+          "seats": 120,
+          "cutoff_general": "67,000 - 97,000",
+          "placement_rate": "85-90%",
+          "avg_salary": "₹3.5-4.5 LPA",
+          "highest_salary": "₹12 LPA"
+        },
+        "it": {
+          "full_name": "Information Technology",
+          "seats": 120,
+          "cutoff_general": "7,500 - 53,000",
+          "placement_rate": "80-85%",
+          "avg_salary": "₹3.5-4.5 LPA",
+          "highest_salary": "₹8 LPA"
+        },
+        "ds": {
+          "full_name": "Computer Science & Engineering (Data Science)",
+          "seats": 60,
+          "cutoff_general": "41,000 - 42,000",
+          "placement_rate": "85-90%",
+          "avg_salary": "₹4.5-6 LPA",
+          "highest_salary": "₹10-12 LPA"
+        },
+        "csd": {
+          "full_name": "Computer Science & Design",
+          "seats": 60,
+          "cutoff_general": "49,000 - 50,000",
+          "placement_rate": "80-85%",
+          "avg_salary": "₹4.5-5.5 LPA",
+          "highest_salary": "₹10-12 LPA"
+        },
+        "ece": {
+          "full_name": "Electronics & Communication Engineering",
+          "seats": 120,
+          "cutoff_general": "33,000 - 40,000",
+          "placement_rate": "70-75%",
+          "avg_salary": "₹4.5-5.5 LPA",
+          "highest_salary": "₹9-12 LPA"
+        },
+        "ee": {
+          "full_name": "Electrical Engineering",
+          "seats": 120,
+          "cutoff_general": "40,000 - 55,000",
+          "placement_rate": "70-75%",
+          "avg_salary": "₹4.5-5.2 LPA",
+          "highest_salary": "₹8-10 LPA"
+        },
+        "me": {
+          "full_name": "Mechanical Engineering",
+          "seats": 60,
+          "cutoff_general": "60,000 - 75,000",
+          "placement_rate": "60-70%",
+          "avg_salary": "₹4-5 LPA",
+          "highest_salary": "₹8-10 LPA"
+        },
+        "ce": {
+          "full_name": "Civil Engineering",
+          "seats": 60,
+          "cutoff_general": "70,000 - 85,000",
+          "placement_rate": "55-65%",
+          "avg_salary": "₹3.5-4 LPA",
+          "highest_salary": "₹6-8 LPA"
+        }
+      }
+    },
+    "mba": {
+      "name": "MBA (Master of Business Administration)",
+      "duration": "2 years",
+      "total_fees": "₹4.29 Lakhs",
+      "first_year_fees": "₹2.25 Lakhs",
+      "seats": 60,
+      "entrance_exams": ["JEMAT", "MAT", "CMAT", "CAT"],
+      "placement_rate": "70-80%",
+      "avg_salary": "₹4-5 LPA"
+    },
+    "mca": {
+      "name": "MCA (Master of Computer Applications)",
+      "duration": "3 years",
+      "total_fees": "₹2.17 Lakhs",
+      "seats": 60,
+      "entrance_exams": ["WB-JECA"],
+      "placement_rate": "70-80%",
+      "avg_salary": "₹3.5-4.5 LPA"
+    },
+    "mtech": {
+      "name": "M.Tech (Master of Technology)",
+      "duration": "2 years",
+      "total_fees": "₹1.26 Lakhs - ₹2.27 Lakhs",
+      "first_year_fees": "₹69,000 - ₹1.19 Lakhs",
+      "entrance_exams": ["GATE", "MAKAUT-PGCET"]
+    }
+  },
+  "fees": {
+    "btech": {
+      "total": "₹4.49 Lakhs - ₹6.1 Lakhs",
+      "per_year": "₹1.09 Lakhs - ₹1.69 Lakhs",
+      "per_semester": "₹63,250",
+      "hostel_total": "₹7.4-8.5 Lakhs",
+      "admission_fee": "₹10,000",
+      "tuition_per_sem": "₹45,000",
+      "development_per_sem": "₹5,000",
+      "library_per_sem": "₹1,000"
+    },
+    "mba": {
+      "total": "₹4.29 Lakhs",
+      "per_semester": "₹55,000"
+    },
+    "hostel": {
+      "boarding_per_sem": "₹35,000",
+      "mess_per_month": "₹4,000",
+      "security_deposit": "₹10,000"
+    },
+    "payment_schedule": "Semester-wise payment"
+  },
+  "admission": {
+    "eligibility": {
+      "btech": "10+2 with Physics, Chemistry, Mathematics (minimum 50% marks for general category)",
+      "mba": "Bachelor's degree in any discipline with minimum 50% marks",
+      "mca": "Bachelor's degree with Mathematics at 10+2 level, minimum 50% marks"
+    },
+    "entrance_exams": {
+      "btech": ["WBJEE", "JEE Main"],
+      "mba": ["JEMAT", "MAT", "CMAT", "CAT"],
+      "mca": ["WB-JECA"],
+      "mtech": ["GATE", "MAKAUT-PGCET"]
+    },
+    "seat_distribution": {
+      "wbjee": "80%",
+      "jee_main": "10%",
+      "management_quota": "10%"
+    },
+    "important_dates": {
+      "wbjee_2026_registration": "Mar 10 - Apr 05, 2026",
+      "wbjee_2026_exam": "May 24, 2026",
+      "jee_main_2026_session2": "Apr 02 - Apr 08, 2026"
+    },
+    "process": [
+      "Register and appear for WBJEE/JEE Main",
+      "Participate in WBJEEB counseling at wbjeeb.nic.in",
+      "Fill BCREC as preference",
+      "Seat allotment based on rank",
+      "Report to college with documents",
+      "Pay fees and complete admission"
+    ],
+    "documents_required": [
+      "10th and 12th Mark Sheets and Certificates",
+      "WBJEE/JEE Main Score Card",
+      "Transfer Certificate",
+      "Migration Certificate",
+      "Caste Certificate (if applicable)",
+      "Domicile Certificate",
+      "6 passport size photographs",
+      "Aadhar Card",
+      "Income Certificate (for scholarships)"
+    ]
+  },
+  "placements": {
+    "overall_stats": {
+      "placement_rate": "80.62%",
+      "total_placed_2024": "550+",
+      "total_placed_2025": "212+ (ongoing)",
+      "highest_package": "₹6.1 LPA",
+      "average_package": "₹3.93 LPA"
+    },
+    "top_recruiters": [
+      "Wipro",
+      "HSBC",
+      "Godrej",
+      "Genpact",
+      "TCS",
+      "Infosys",
+      "Cognizant",
+      "Amazon"
+    ],
+    "sector_wise": {
+      "it_software": "Highest placement",
+      "finance": "Good placement",
+      "core_engineering": "Moderate placement"
+    }
+  },
+  "scholarships": {
+    "tfw": "Tuition Fee Waiver for meritorious students from economically weaker sections",
+    "govt_schemes": "Various state and central government scholarships available",
+    "merit_based": "Scholarships for GATE qualified M.Tech students"
+  },
+  "facilities": {
+    "infrastructure": {
+      "classrooms": 48,
+      "labs": "Well-equipped computer, electronics, mechanical labs",
+      "library": "Large collection of books and journals",
+      "sports": "Indoor and outdoor sports facilities"
+    },
+    "student_clubs": "20+ clubs including dance, art, music, coding, recitation",
+    "events": {
+      "zeal": "Annual cultural fest",
+      "horizon": "Technical fest"
+    },
+    "hostel": "Separate hostels for boys and girls"
+  },
+  "contacts": {
+    "main_office": {
+      "phone": ["0343-2501353", "0343-2504106", "0343-2449", "0343-3985", "0343-3360", "0343-4224"],
+      "mobile": "+91-6297128554",
+      "fax": ["0343-2504059", "0343-2503424"],
+      "email": "info@bcrec.ac.in",
+      "website": "www.bcrec.ac.in",
+      "hours": "Mon-Fri: 10:00 AM - 5:30 PM"
+    },
+    "admissions": {
+      "phone": ["9333928874", "9832131164", "9932245570", "9434250472", "7063189887", "8370989772"],
+      "email": "admissions@bcrec.ac.in"
+    },
+    "accounts": {
+      "phone": "0343-2501353 (Ext 278)",
+      "mobile": "7001380141",
+      "email": "accounts@bcrec.ac.in"
+    },
+    "placement": {
+      "email": "tpo.kol@bcrec.ac.in",
+      "phone": "033-2355 4412, 033-2355 8703",
+      "alternate_email": "bcrec_kol@yahoo.co.in"
+    },
+    "principal": {
+      "email": "principal@bcrec.ac.in",
+      "phone": "0343-2501353"
+    },
+    "vice_principal": {
+      "name": "Prof. (Dr.) K. M. Hossain",
+      "email": "km.hossain@bcrec.ac.in"
+    },
+    "departments": {
+      "cse": {
+        "name": "Dr. Bappaditya Das",
+        "qualification": "PhD, M.Tech, B.Tech, B.Sc(Hons)",
+        "email": "bappaditya.das@bcrec.ac.in",
+        "phone": "+91-9051218105"
+      }
+    },
+    "offices": {
+      "durgapur": "Management House, Jemua Road, Fuljhore, Durgapur - 713206",
+      "kolkata": "92/2A, Bidhan Nagar Main Road, Concord Tower 1st Floor, Ultadanga, Kolkata - 700067"
+    }
+  },
+  "intent_keywords": {
+    "fee": {
+      "keywords": ["fee", "fees", "cost", "price", "payment", "pay", "charge", "amount", "rupee", "lakh"],
+      "topics": ["fees", "btech_fees", "mba_fees", "hostel_fees", "scholarship"]
+    },
+    "contact": {
+      "keywords": ["phone", "call", "contact", "number", "email", "address", "office", "timing", "hours"],
+      "topics": ["main_contact", "admission_contact", "placement_contact", "department_contact"]
+    },
+    "admission": {
+      "keywords": ["admission", "apply", "eligibility", "eligible", "criteria", "require", "document", "process", "counseling", "wbjee", "jee", "entrance", "cutoff", "rank", "seat"],
+      "topics": ["eligibility", "process", "documents", "dates", "entrance_exams"]
+    },
+    "course": {
+      "keywords": ["course", "courses", "branch", "branches", "department", "departments", "program", "stream", "specialization", "intake", "seat", "seats"],
+      "topics": ["all_courses", "cse", "aiml", "it", "ds", "csd", "ece", "ee", "me", "ce", "mba", "mca", "mtech"]
+    },
+    "placement": {
+      "keywords": ["placement", "placements", "job", "jobs", "package", "salary", "recruit", "recruiter", "company", "companies", "placed", "hiring"],
+      "topics": ["stats", "recruiters", "highest", "average"]
+    },
+    "facility": {
+      "keywords": ["facility", "facilities", "infrastructure", "library", "lab", "labs", "hostel", "sports", "club", "clubs", "event", "events", "fest"],
+      "topics": ["infrastructure", "hostel", "sports", "clubs", "events"]
+    },
+    "scholarship": {
+      "keywords": ["scholarship", "scholarships", "waiver", "financial", "aid", "merit", " concession"],
+      "topics": ["tfw", "govt_schemes", "merit_based"]
+    },
+    "curriculum": {
+      "keywords": ["syllabus", "curriculum", "subject", "subjects", "coursework", "learn", "teaching"],
+      "topics": ["year1", "year2", "year3", "year4"]
+    },
+    "career": {
+      "keywords": ["career", "careers", "job", "jobs", "future", "prospect", "prospects", "opportunity", "opportunities"],
+      "topics": ["paths", "options", "government", "psu"]
+    },
+    "general": {
+      "keywords": ["college", "about", "history", "established", "accreditation", "ranking", "location", "campus"],
+      "topics": ["overview", "location", "accreditation", "ranking"]
+    }
+  },
+  "quick_answers": {
+    "what_is_btech_fee": "B.Tech total fees range from ₹4.49 Lakhs to ₹6.1 Lakhs depending on the branch. The first year fees are between ₹1.09 Lakhs to ₹1.69 Lakhs.",
+    "what_is_mba_fee": "MBA total fees are ₹4.29 Lakhs for the entire 2-year program.",
+    "how_to_apply": "Apply through WBJEE counseling at wbjeeb.nic.in. You need a valid WBJEE or JEE Main rank to participate.",
+    "contact_admission": "For admission queries, call: 9333928874, 9832131164, or 9932245570. Email: admissions@bcrec.ac.in",
+    "placement_rate": "BCREC has an 80.62% placement rate with the highest package of ₹6.1 LPA and average package of ₹3.93 LPA.",
+    "best_branch": "CSE-AIML has the highest placement rate (90-95%) and salary (₹5-7 LPA), but requires a higher WBJEE rank (78,000-99,000)."
+  }
+}

@@ -1,0 +1,19 @@
+# College Voice Agent - Clean Package
+
+This is a clean package without node_modules and cache files.
+
+## Setup Instructions:
+
+### Backend:
+1. cd backend
+2. pip install -r requirements.txt
+3. python -m uvicorn app.main:app --reload
+
+### Frontend:
+1. cd frontend
+2. npm install
+3. npm run dev
+
+### Configuration:
+- Add your API keys to backend/.env file
+- See README.md for full setup instructions
