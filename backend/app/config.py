@@ -6,6 +6,7 @@ from groq import Groq
 class Settings(BaseSettings):
     # API Keys
     groq_api_key: str = os.getenv("GROQ_API_KEY", "")
+    gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
     speechmatics_api_key: str = os.getenv("SPEECHMATICS_API_KEY", "")
 
     # Auth Settings
@@ -20,6 +21,11 @@ class Settings(BaseSettings):
     
     # Direct Groq client initialization
     groq_client: Optional[Groq] = None
+    
+    # Gemini settings
+    gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+    gemini_temperature: float = float(os.getenv("GEMINI_TEMPERATURE", "0.3"))
+    gemini_max_tokens: int = int(os.getenv("GEMINI_MAX_TOKENS", "500"))
     
     # Directories
     chroma_persist_dir: str = os.getenv("CHROMA_PERSIST_DIR", "chroma_db")

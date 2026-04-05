@@ -39,14 +39,17 @@ const VoiceChat: React.FC<VoiceChatProps> = ({
     onNewChat,
 }) => {
     const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    // Toggle between 'llm-query' (prototype with Gemini) and 'hybrid-query' (local hybrid)
+    const QUERY_ENDPOINT = '/qa/llm-query'; // Use '/qa/hybrid-query' for local hybrid
     const [isRecording, setIsRecording] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const [textInput, setTextInput] = useState('');
     const [isSpeaking, setIsSpeaking] = useState(false);
-    const [health, setHealth] = useState<{ status: string; ollama_connected: boolean; unified_tool: boolean } | null>(null);
+    const [health, setHealth] = useState<{ status: string; ollama_connected: boolean; gemini_available: boolean } | null>(null);
     const [feedbackType, setFeedbackType] = useState<'up' | 'down' | null>(null);
     const [sessionId, setSessionId] = useState<string | null>(null);
+    const [llmMode, setLlmMode] = useState(true); // Toggle for prototype
 
     const voice = useVoice({ language: 'en-US' });
     const noiseCanceller = useNoiseCancellation({
@@ -204,7 +207,9 @@ const VoiceChat: React.FC<VoiceChatProps> = ({
         if (!queryText) setTextInput('');
 
         try {
-            const res = await fetch(`${API_BASE}/qa/query`, {
+            // Use LLM endpoint for prototype, hybrid for local
+            const endpoint = llmMode ? '/qa/llm-query' : '/qa/hybrid-query';
+            const res = await fetch(`${API_BASE}${endpoint}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -274,10 +279,16 @@ const VoiceChat: React.FC<VoiceChatProps> = ({
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Chip
-                        label={health?.ollama_connected ? "Ollama Connected" : "Ollama Disconnected"}
+                        label={health?.gemini_available ? "Gemini Active (Prototype)" : "Gemini Not Configured"}
+                        color={health?.gemini_available ? "info" : "warning"}
+                        size="small"
+                        sx={{ fontSize: '0.7rem' }}
+                    />
+                    <Chip
+                        label={health?.ollama_connected ? "Ollama OK" : "Ollama Offline"}
                         color={health?.ollama_connected ? "success" : "error"}
                         size="small"
-                        sx={{ fontSize: '0.75rem' }}
+                        sx={{ fontSize: '0.7rem' }}
                     />
                     <Button
                         variant="outlined"

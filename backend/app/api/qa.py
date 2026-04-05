@@ -1709,6 +1709,77 @@ async def hybrid_query_endpoint(request: Request, query_data: HybridQueryRequest
         raise HTTPException(status_code=500, detail=str(e))
 
 
+class LLMQueryRequest(BaseModel):
+    message: str
+    conversation_id: Optional[str] = None
+    session_id: Optional[str] = None
+
+
+@router.post("/llm-query")
+async def llm_query_endpoint(request: Request, query_data: LLMQueryRequest):
+    """
+    NEW Pure LLM Query Endpoint using Google Gemini API.
+    
+    This endpoint uses Gemini 2.0 Flash with the full knowledge base injected
+    into the prompt. It handles all query variations naturally.
+    
+    This is the PROTOTYPE endpoint for showcasing to authorities.
+    """
+    start_time = time.time()
+    session_id = query_data.session_id or getattr(request.state, 'session_id', 'default')
+    logger.info(f"[{session_id}] LLM Query: '{query_data.message[:60]}...'")
+    
+    try:
+        # Import here to avoid circular imports
+        from app.services.llm.gemini_service import get_gemini_service
+        
+        # Get conversation history if available
+        conversation_history = None
+        if query_data.conversation_id:
+            conversation_history = await _get_conversation_messages(query_data.conversation_id, limit=6)
+        
+        # Get Gemini service
+        gemini_service = get_gemini_service()
+        
+        if not gemini_service.is_available():
+            return QueryResponse(
+                answer="Gemini API is not configured. Please set GEMINI_API_KEY in your .env file.",
+                sources=[],
+                session_id=session_id,
+                conversation_id=query_data.conversation_id,
+                source="error",
+                intent="configuration_error",
+                confidence=0.0
+            )
+        
+        # Generate response using Gemini
+        result = await gemini_service.generate_response(
+            query_data.message,
+            conversation_history=conversation_history
+        )
+        
+        # Save user message to conversation
+        if query_data.conversation_id:
+            await _save_message(query_data.conversation_id, "user", query_data.message)
+        
+        elapsed = time.time() - start_time
+        logger.info(f"[{session_id}] LLM processed in {elapsed:.2f}s (source: {result.get('source')})")
+        
+        return QueryResponse(
+            answer=result["answer"],
+            sources=[],
+            session_id=session_id,
+            conversation_id=query_data.conversation_id,
+            source=result.get("source", "gemini"),
+            intent="llm_generated",
+            confidence=0.95
+        )
+        
+    except Exception as e:
+        logger.error(f"LLM query error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.post("/query-response")
 async def save_response_endpoint(conversation_id: str, answer: str):
     """Save the assistant's response to conversation (called after query returns)"""
@@ -1743,10 +1814,21 @@ async def health_check():
     """Health check endpoint"""
     ollama_ok = llm.is_available()
     
+    # Check Gemini availability
+    gemini_ok = False
+    try:
+        from app.services.llm.gemini_service import get_gemini_service
+        gemini_ok = get_gemini_service().is_available()
+    except Exception:
+        pass
+    
     return {
-        'status': 'healthy' if ollama_ok else 'degraded',
+        'status': 'healthy',
         'ollama_connected': ollama_ok,
+        'gemini_available': gemini_ok,
         'unified_tool': True,
+        'hybrid_endpoint': '/qa/hybrid-query',
+        'llm_endpoint': '/qa/llm-query',
         'knowledge_base': 'combined_kb.json',
         'conversations_enabled': True
     }
