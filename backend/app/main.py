@@ -66,10 +66,13 @@ app.include_router(auth_routes.router, tags=["auth"])
 app.include_router(admin.router, prefix="/admin", tags=["admin"])
 
 # Serve Frontend Static Files (if they exist)
-frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "dist")
+frontend_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend", "dist")
+logger.info(f"Searching for frontend at: {frontend_path}")
 if os.path.exists(frontend_path):
+    logger.info("Frontend directory found. Mounting static files.")
     app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
 else:
+    logger.warning(f"Frontend directory NOT found at {frontend_path}")
     @app.get("/")
     async def root():
         return {"message": "College Voice Agent API is running! (Frontend not built)"}
