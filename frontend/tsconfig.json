@@ -9,7 +9,7 @@
         ],
         "module": "ESNext",
         "skipLibCheck": true,
-        "types": ["vite/client"],
+        "types": ["vite/client", "node"],
         /* Bundler mode */
         "moduleResolution": "bundler",
         "allowImportingTsExtensions": true,
