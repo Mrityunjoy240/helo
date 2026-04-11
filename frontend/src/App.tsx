@@ -96,7 +96,6 @@ const theme = createTheme({
 
 function App() {
     const [conversationId, setConversationId] = useState<string | null>(null);
-    const [sidebarOpen, setSidebarOpen] = useState(true);
 
     const handleSelectConversation = useCallback((id: string | null) => {
         setConversationId(id);

@@ -1,8 +1,8 @@
 {
   "meta": {
-    "version": "5.0",
+    "version": "5.2",
     "last_updated": "April 2026",
-    "completeness": "~100%",
+    "completeness": "100%",
     "agent_instruction": "Answer questions directly using this knowledge base. If exact data is unavailable, say 'Please contact the college directly.' Phone: 0343-2501353 | Mobile: +91-6297128554 | Email: info@bcrec.ac.in"
   },
 
@@ -201,97 +201,73 @@
     }
   },
 
-  "hostel": {
-    "available": true,
-    "total_hostels": 5,
-    "boys_hostels": 3,
-    "girls_hostels": 2,
-    "total_capacity": 1500,
-    "room_types": [
-      { "type": "Single Bed", "rent_per_sem": 30000, "availability": "Limited (need-based)" },
-      { "type": "Double/Triple Bed", "rent_per_sem": 10000, "availability": "Standard" },
-      { "type": "4-Bed", "rent_per_sem": 10000, "availability": "Maximum" }
-    ],
-    "caution_money": 2000,
-    "mess": {
-      "monthly_charge": 5000,
-      "months_per_year": 11,
-      "veg": true,
-      "non_veg": "Available 3-4 days/week",
-      "timings": {
-        "breakfast": "07:30 - 09:00 AM",
-        "lunch": "12:30 - 02:00 PM",
-        "dinner": "07:30 - 09:30 PM"
-      }
-    },
-    "facilities": ["24-hour WiFi", "Bed/Table/Chair/Wardrobe provided", "Laundry service (paid)"],
-    "rules": {
-      "boys_curfew": "08:30 PM",
-      "girls_curfew": "06:30 - 07:00 PM",
-      "guests": "Day guests allowed with permission, no overnight stays"
-    },
-    "contacts": {
-      "helpline": "0343-2501353",
-      "emergency": "+91-6297128554",
-      "womens_safety": "9851006415"
-    }
-  },
-
-  "placements": {
-    "overall_rate_2025": "80.62%",
-    "highest_package": { "amount": 30, "company": "Cyberwissen", "role": "Security Specialist", "year": 2026 },
-    "top_companies_2026": [
-      { "company": "Cyberwissen", "package": "30 LPA" },
-      { "company": "Cerify", "package": "15 LPA" },
-      { "company": "Niwesh Kumar (SDE)", "package": "12 LPA" },
-      { "company": "TCS Digital", "package": "7-9 LPA" },
-      { "company": "Celebal Technology", "package": "7 LPA" }
-    ],
-    "internship": {
-      "selection_rate": "80-90%",
-      "top_partners": ["TCS", "Wipro", "Cognizant", "SAIL", "Tata Power"],
-      "software_stipend": "Rs. 8000-25000/month",
-      "core_stipend": "Rs. 2000-5000/month"
-    },
-    "contacts": {
-      "head_cro": "Mr. Atanu Maity",
-      "manager": "Mr. Deepraj Mondal",
-      "campus_incharge": "Prof. Prabal Kumar Sahu"
-    }
-  },
-
   "infrastructure": {
-    "wifi": { "speed": "28 Mbps", "coverage": "Full campus including hostels" },
+    "wifi": { 
+      "enabled": true, 
+      "coverage": "Full campus including all academic blocks and hostels",
+      "note": "Speed varies based on network traffic"
+    },
     "auditoriums": [
       { "name": "Dulal Mitra Auditorium", "type": "AC" },
       { "name": "Nazrul Manch", "capacity": "900+", "type": "Open-air" },
       { "name": "Albert Einstein Hall", "type": "AC Seminar Hall" }
     ],
     "library": {
+      "description": "Multi-floor facility with vast collection of text and reference books",
       "books": "80,000+",
       "journals": "National and International",
-      "e_resources": ["INDEST-AICTE Consortium", "IEEE", "E-journals"]
+      "e_resources": ["IEEE", "Springer", "Elsevier", "ScienceDirect", "INDEST-AICTE Consortium"],
+      "book_bank": "Students can borrow one book per subject for the entire semester"
     },
     "computer_labs": {
+      "description": "Well-equipped labs with modern hardware",
+      "special_labs": {
+        "khorana_research_lab": "UV-Vis spectrophotometers, digital pH meters"
+      },
       "config": "Intel Core i5/i7, 8-16GB RAM",
-      "software": ["MATLAB", "Simulink", "TensorFlow", "Python", "Xilinx", "ANSYS", "AutoCAD", "CREO"]
+      "internet": "High-speed internet connectivity",
+      "software": ["MATLAB", "Simulink", "TensorFlow", "Python", "Xilinx", "ANSYS", "AutoCAD", "CREO", "Department-specific software"]
+    },
+    "canteen": {
+      "available": true,
+      "description": "On-campus cafeteria providing snacks and meals for students and staff"
     },
     "sports": {
       "outdoor": ["Cricket", "Football", "Basketball", "Athletics", "Volleyball", "Badminton"],
-      "indoor": ["Table Tennis", "Carrom", "Chess", "Gym"]
+      "indoor": ["Table Tennis", "Carrom", "Chess"],
+      "gym": "Multi-Gym available",
+      "ground": "Football and cricket grounds"
+    },
+    "medical": {
+      "available": true,
+      "emergency": "24/7 access to emergency services",
+      "hospital": "Tie-up with Mission Hospital",
+      "womens_safety_helpline": "9851006415 (24x7)"
     },
     "facilities": ["ATM", "Medical (Mission Hospital)", "Cafeteria", "Gym", "Solar Power", "24x7 CCTV Security"]
   },
 
   "student_life": {
-    "tech_fest": { "name": "HORIZON", "month": "February" },
+    "tech_fest": { "name": "HORIZON", "month": "February", "latest": "HORIZON 2K26" },
     "cultural_fest": { "name": "ZEAL", "month": "January" },
     "events": [
       { "name": "Moksha", "month": "November", "type": "Freshers' Welcome" },
       { "name": "Agomoni", "month": "September", "type": "Pre-Durga Puja" },
-      { "name": "Sports Meet", "month": "January" }
+      { "name": "Sports Meet", "month": "January" },
+      { "name": "National Youth Day", "type": "Annual celebration" },
+      { "name": "International Kolkata Book Fair", "type": "Annual participation" }
     ],
-    "clubs": ["NSS", "IIC (Innovation Council)", "Coding Clubs", "Photography & Media", "Literary & Debate", "Sports Club"]
+    "clubs": [
+      "NSS",
+      "IIC (Innovation Council)",
+      "Coding Clubs",
+      "Photography & Media",
+      "Literary & Debate",
+      "Sports Club",
+      "IEEE Student Branch",
+      "IIC-BCREC (Institution's Innovation Council)"
+    ],
+    "description": "Vibrant campus life with various clubs, tech fests, cultural events, and celebrations"
   },
 
   "departments": {
@@ -302,7 +278,7 @@
       "hod": { "name": "Dr. Dinesh Kumar Pradhan", "mobile": "9433303419", "email": "dinesh.pradhan@bcrec.ac.in" }
     },
     "ECE": {
-      "hod": { "name": "Dr. Mrinmoy Chakraborty", "email": "mrinmoy.chakraborty@bcrec.ac.in" }
+      "hod": { "name": "Dr. Mrinmoy Chakraborty", "mobile": "9932245570", "email": "mrinmoy.chakraborty@bcrec.ac.in" }
     },
     "EE": {
       "hod": { "name": "Dr. Shibendu Mahata", "mobile": "9832724052", "email": "shibendu.mahata@bcrec.ac.in" }
@@ -354,8 +330,13 @@
       "Industrial visit costs",
       "Late fee fines if applicable"
     ],
-    "refund_policy": "Full refund before session starts (Rs. 1000 processing fee deducted). Post-commencement: significantly reduced as per AICTE/WBJEEB norms.",
-    "installments": "Semester-wise payment. Custom payment schedule available for hardship cases on appeal to management."
+    "refund_policy": {
+      "guidelines": "As per AICTE/UGC guidelines",
+      "within_timeline": "Full refund minus Rs. 1,000 processing fee, prospectus fee, and dress kit charges (if already made)",
+      "post_timeline_with_replacement": "Refund minus processing fee and proportionate tuition/hostel charges if replacement student fills the seat",
+      "post_timeline_no_replacement": "Only caution deposit is refundable; all other academic and admission fees are forfeited"
+    },
+    "installments": "Semester-wise payment. Contact college for hardship cases."
   },
 
   "admission_documents": {
@@ -363,8 +344,11 @@
     "academic": ["Class 10 Marksheet and Pass Certificate", "Class 12 Marksheet and Pass Certificate"],
     "counseling": ["Allotment Letter from WBJEEB"],
     "character": ["Character Certificate from last attended institution"],
+    "photographs": ["6 copies of color stamp-size photographs"],
+    "certificates": ["Domicile Certificate (for West Bengal students)", "Aadhar Card", "Caste Certificate (if applicable)"],
     "other": ["Migration Certificate (if applicable)", "Aadhar Card", "6-8 Passport-size Photographs"],
-    "scholarship": ["Income Certificate (for TFW candidates)"]
+    "scholarship": ["Income Certificate (for TFW candidates)"],
+    "hostel_items": ["Big and small lock", "Bedding with mosquito net", "Steel glass", "Bucket", "Mug", "Torch", "Big trunk for storage"]
   },
 
   "scholarships": {
@@ -399,25 +383,31 @@
     "policy": "Zero Tolerance",
     "measures": [
       "Dedicated Anti-Ragging Committee",
-      "Anti-Ragging Squad",
-      "Legal affidavit signed by students and parents at admission",
-      "Separate fresher hostels for safety"
+      "Active Anti-Ragging Squad that conducts surprise raids",
+      "Legal affidavit signed by both students and parents at admission",
+      "Separate fresher hostels for safety",
+      "Regular monitoring and surprise checks"
     ],
-    "reporting": "Contact college helpline or log on to anti-ragging portal"
+    "reporting": "Contact college helpline 0343-2501353 or log on to anti-ragging portal",
+    "safety": "Women's Safety Helpline: 9851006415 (24x7)"
   },
 
   "placements": {
     "overall_rate_2025": "80.62%",
     "eligible_placement_rate": "75-85% of eligible students get placed",
     "highest_package": { "amount": 30, "company": "Cyberwissen", "role": "Security Specialist", "year": 2026 },
+    "highest_salary_branch": "CSE (Computer Science) - traditionally secures highest volume and packages",
     "top_companies_2026": [
       { "company": "Cyberwissen", "package": "30 LPA" },
       { "company": "Cerify", "package": "15 LPA" },
       { "company": "Niwesh Kumar (SDE)", "package": "12 LPA" },
       { "company": "TCS Digital", "package": "7-9 LPA" },
-      { "company": "Celebal Technology", "package": "7 LPA" }
+      { "company": "Celebal Technology", "package": "7 LPA" },
+      { "company": "TCS", "package": "3.5-4 LPA" }
     ],
     "internship": {
+      "available": true,
+      "description": "Vocational and industrial training opportunities provided through industry tie-ups",
       "selection_rate": "80-90%",
       "top_partners": ["TCS", "Wipro", "Cognizant", "SAIL", "Tata Power"],
       "software_stipend": "Rs. 8000-25000/month",
@@ -425,7 +415,15 @@
     },
     "training_cell": {
       "name": "Training & Placement (T&P) Cell",
-      "programs": ["Aptitude training", "Soft Skills development", "Mock Interviews", "Resume building"],
+      "programs": {
+        "aptitude": "Numerical and Analytical aptitude training",
+        "technical": "Technical skills development",
+        "coding": "Coding practice and competition",
+        "soft_skills": "Communication and interpersonal skills",
+        "mock_interviews": "Practice interviews with feedback",
+        "resume_building": "Resume preparation guidance"
+      },
+      "trainers": "In-house team and external mock tests",
       "starts_from": "3rd year onwards"
     },
     "contacts": {
@@ -441,19 +439,43 @@
       "description": "Core branches have experienced professors with PhDs. Newer CSE specializations (AI/ML) have mix of experienced and young, tech-savvy faculty."
     },
     "student_teacher_ratio": "15:1 to 20:1",
+    "teaching_methodology": "Combination of lectures, practicals, projects, and industry-oriented learning. Focus on conceptual understanding and hands-on experience.",
+    "teaching_quality": {
+      "approach": "Student-centric with focus on practical applications",
+      "methods": ["Interactive classroom teaching", "Lab sessions with hands-on practice", "Industry projects and case studies", "Guest lectures from industry experts", "Regular assessments and feedback"],
+      "evaluation": "Continuous evaluation through assignments, presentations, and exams",
+      "support": "Mentor system for each student batch, doubt-clearing sessions, and extra classes for weak students",
+      "faculty_development": "Regular faculty training programs and workshops to stay updated with industry trends"
+    },
     "exam_pattern": {
       "structure": "Continuous Assessment (CA) + Mid-semesters + Semester-end theory/practical exams",
       "ca_components": ["Class tests", "Assignments", "Presentations", "Viva voce"]
     },
-    "syllabus": "Updated and aligned with industry needs following Autonomous status (Batch 2024-25 onwards)",
-    "practicals": "Conducted strictly as per academic calendar. Well-equipped labs including AICTE IDEA Lab."
+    "syllabus": {
+      "status": "Regularly updated",
+      "authority": "MAKAUT (Autonomous Institute curriculum from 2024-25 batch)",
+      "note": "Aligned with industry needs and current technological trends"
+    },
+    "practicals": {
+      "conducted": "Strictly as per academic calendar",
+      "labs": "Well-equipped labs including AICTE IDEA Lab",
+      "special_labs": "Khorana Research Laboratory with UV-Vis spectrophotometers and digital pH meters",
+      "quality": "Hands-on practical experience with proper supervision"
+    },
+    "easiest_branch": {
+      "note": "This is subjective and varies by student capability and interests",
+      "perceived_easier": "IT, CSE (more flexible workload, programming-focused)",
+      "perceived_harder": "Mechanical, Civil (heavier core engineering subjects, more practicals)"
+    }
   },
 
   "branch_change": {
     "allowed": true,
-    "timing": "After 1st Year (2nd Semester)",
-    "criteria": "Merit-based (CGPA) + Seat vacancy in target branch",
-    "process": "Apply through academic section after declaring 1st year results"
+    "timing": "After 1st Year (after 2nd Semester results are declared)",
+    "criteria": "Merit-based (GPA/CGPA) + Seat vacancy in target branch",
+    "authority": "Governed by MAKAUT/College regulations",
+    "process": "Apply through academic section after declaring 1st year results",
+    "note": "Subject to availability of seats and college policy"
   },
 
   "hostel": {
@@ -477,7 +499,7 @@
       "veg": true,
       "non_veg": "Available 3-4 days/week (Chicken/Fish/Egg)",
       "veg_options": "Paneer and Soybean available daily",
-      "quality": "Average to decent. Some inconsistency reported over time.",
+      "quality": "Average to decent (subjective - varies by student perception)",
       "timings": {
         "breakfast": "07:30 - 09:00 AM",
         "lunch": "12:30 - 02:00 PM",
@@ -487,9 +509,12 @@
     },
     "facilities": ["24-hour WiFi", "Bed/Table/Chair/Wardrobe provided", "Laundry service (paid)"],
     "rules": {
-      "boys_curfew": "08:30 PM",
-      "girls_curfew": "06:30 - 07:00 PM",
-      "guests": "Day guests allowed with permission, no overnight stays"
+      "boys_curfew": "08:30 PM (winter: 07:30 PM)",
+      "girls_curfew": "06:30 PM (winter: 06:00 PM)",
+      "guests": "Day guests allowed with permission, no overnight stays",
+      "entry_exit": "Students must sign in/out when leaving campus after curfew",
+      "maintenance": "Report room issues to warden - addressed within 24-48 hours",
+      "visitors": "Parents can visit during designated hours on weekends"
     },
     "contacts": {
       "helpline": "0343-2501353",

@@ -51,7 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
     const loadConversations = async () => {
         try {
-            const res = await fetch(`${API_BASE}/conversations`);
+            const res = await fetch(`${API_BASE}/api/conversations`);
             if (res.ok) {
                 const data = await res.json();
                 setConversations(data);
@@ -63,7 +63,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
     const handleNewChat = async () => {
         try {
-            const res = await fetch(`${API_BASE}/conversations`, {
+            const res = await fetch(`${API_BASE}/api/conversations`, {
                 method: 'POST',
             });
             if (res.ok) {
@@ -87,7 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         if (!conversationToDelete) return;
         
         try {
-            const res = await fetch(`${API_BASE}/conversations/${conversationToDelete}`, {
+            const res = await fetch(`${API_BASE}/api/conversations/${conversationToDelete}`, {
                 method: 'DELETE',
             });
             if (res.ok) {

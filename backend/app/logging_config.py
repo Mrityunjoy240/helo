@@ -68,9 +68,9 @@ def setup_logging(log_dir: str = "logs", log_level: str = "INFO"):
     logger.addHandler(error_handler)
     
     
-    # Configure granular logging for Voice and TTS
-    logging.getLogger("app.api.voice").setLevel(logging.DEBUG)
-    logging.getLogger("app.services.tts").setLevel(logging.DEBUG)
+    # Configure granular logging for API services
+    logging.getLogger("app.api").setLevel(logging.DEBUG)
+    logging.getLogger("app.services").setLevel(logging.DEBUG)
     
     logging.info("Logging configured successfully")
 

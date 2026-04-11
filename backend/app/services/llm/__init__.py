@@ -1,4 +1,6 @@
-from .ollama_client import OllamaLLM
-from .base import BaseLLM
+from .groq_service import GroqService, get_groq_service
 
-__all__ = ["OllamaLLM", "BaseLLM"]
+__all__ = [
+    "GroqService",
+    "get_groq_service"
+]

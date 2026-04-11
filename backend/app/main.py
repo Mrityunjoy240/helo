@@ -1,8 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.api import qa, voice
-from app.api import streaming
+from app.api import qa
 from app.api import conversations
 import logging
 import os
@@ -10,10 +9,14 @@ from uuid import uuid4
 
 from app.logging_config import setup_logging
 from app.config import settings
+from app.database import init_db
 
 # Configure logging
 setup_logging()
 logger = logging.getLogger(__name__)
+
+# Initialize Database
+init_db()
 
 # Create FastAPI app
 app = FastAPI(title="College Voice Agent API", version="1.0.0")
@@ -51,9 +54,10 @@ app.mount("/audio", StaticFiles(directory=settings.temp_audio_dir), name="audio"
 
 # Include API routes
 app.include_router(qa.router, prefix="/qa", tags=["qa"])
-app.include_router(voice.router, prefix="/voice", tags=["voice"])
-app.include_router(streaming.router, prefix="/stream", tags=["streaming"])
-app.include_router(conversations.router, prefix="/conversations", tags=["conversations"])
+app.include_router(conversations.router, prefix="/api", tags=["conversations"])
+from app.api import tts, stt
+app.include_router(tts.router, prefix="/qa", tags=["tts"])
+app.include_router(stt.router, prefix="/qa", tags=["stt"])
 from app.api import monitoring, auth_routes, admin
 from app.api import health
 app.include_router(monitoring.router, prefix="/monitoring", tags=["monitoring"])
@@ -64,10 +68,6 @@ app.include_router(admin.router, prefix="/admin", tags=["admin"])
 @app.get("/")
 async def root():
     return {"message": "College Voice Agent API is running!"}
-
-@app.get("/health")
-async def health():
-    return {"status": "healthy"}
 
 if __name__ == "__main__":
     import uvicorn

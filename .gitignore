@@ -64,3 +64,6 @@ Thumbs.db
 *.key
 secrets/
 credentials.json
+
+# Custom
+_archive/

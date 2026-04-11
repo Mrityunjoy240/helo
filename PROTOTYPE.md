@@ -1,53 +1,53 @@
-# BCREC Voice Agent - Gemini LLM Prototype
+# BCREC Voice Agent - Groq LLM Prototype
 
 ## Quick Start Guide
 
-### Step 1: Get Gemini API Key
+### Step 1: Get Groq API Key (Already configured)
 
-1. Go to https://aistudio.google.com
-2. Sign in with your Google account
-3. Click "Get API Key" in the sidebar
-4. Create a new API key
-5. Copy the key
+The Groq API key is already set in `local.env`:
+```
+GROQ_API_KEY=YOUR_GROQ_API_KEY_HERE
+```
 
-### Step 2: Setup Environment
+If you need a new key:
+1. Go to https://console.groq.com
+2. Sign up (free)
+3. Create API key
+4. Copy to `local.env`
+
+### Step 2: Install & Setup
 
 ```bash
 # Navigate to project
 cd Ai_voice-main/Ai_voice-main
 
-# Copy environment file
+# Copy environment file (if not exists)
 copy local.env.example local.env
 
-# Edit local.env and add your Gemini API key
-# GEMINI_API_KEY=your_key_here
-```
-
-### Step 3: Install Dependencies
-
-```bash
+# Install backend dependencies
 cd backend
 pip install -r requirements.txt
 ```
 
-### Step 4: Start the Server
+### Step 3: Start the Server
 
 ```bash
-# Start backend
+# Start backend (in one terminal)
+cd backend
 python -m uvicorn app.main:app --reload --port 8000
 
-# In another terminal, start frontend
+# Start frontend (in another terminal)
 cd frontend
 npm install
 npm run dev
 ```
 
-### Step 5: Open in Browser
+### Step 4: Open in Browser
 
 Open http://localhost:5173
 
 You should see:
-- "Gemini Active (Prototype)" status chip
+- "Groq Active (Prototype)" status chip (blue)
 - Voice chat interface
 - Ability to type or speak queries
 
@@ -57,9 +57,10 @@ You should see:
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/qa/llm-query` | POST | **PROTOTYPE** - Uses Gemini |
+| `/qa/groq-query` | POST | **PROTOTYPE** - Uses Groq Llama 3.3 70B |
 | `/qa/hybrid-query` | POST | Local hybrid (Ollama) |
 | `/qa/query` | POST | Legacy keyword-based |
+| `/qa/health` | GET | Shows Groq/Ollama status |
 
 ---
 
@@ -98,18 +99,35 @@ I hate coding. What branch should I take?
 │       ↓                                                      │
 │   Frontend (React)                                           │
 │       ↓                                                      │
-│   /qa/llm-query endpoint                                   │
+│   /qa/groq-query endpoint                                   │
 │       ↓                                                      │
-│   Gemini Service                                              │
-│   ├── System Prompt (rules)                                 │
+│   Groq Service                                                │
+│   ├── System Prompt (rules)                                  │
 │   ├── Knowledge Base (full JSON)                            │
 │   └── Conversation History (last 4)                         │
 │       ↓                                                      │
-│   Gemini 2.0 Flash                                           │
+│   Groq Llama 3.3 70B                                         │
 │       ↓                                                      │
 │   Natural Response                                           │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Why Groq Instead of Gemini?
+
+| Feature | Groq | Gemini |
+|---------|------|--------|
+| Speed | ~500ms (FAST) | ~2-3s |
+| Model | Llama 3.3 70B | Gemini 2.0 Flash |
+| Free Tier | Unlimited requests | 15 req/min |
+| Accuracy | Excellent | Good |
+| Context Window | 128K tokens | 1M tokens |
+
+**Groq wins for voice assistant use cases** because:
+1. Speed is critical for real-time voice interaction
+2. Llama 3.3 70B handles complex queries well
+3. No rate limits for prototype/demo
 
 ---
 
@@ -132,7 +150,7 @@ The prototype uses `combined_kb.json` which contains:
 
 | Component | Cost |
 |-----------|------|
-| Gemini API | Free (15 req/min, 1500/day) |
+| Groq API | **FREE** (current tier) |
 | Hosting | Your server |
 | Total | **₹0** |
 
@@ -140,9 +158,9 @@ The prototype uses `combined_kb.json` which contains:
 
 ## Data Privacy (Prototype Warning)
 
-⚠️ **This prototype sends data to Google servers.**
+⚠️ **This prototype sends data to Groq servers.**
 
-For demo purposes, this is acceptable. For production, you must switch to the local hybrid approach.
+For demo purposes, this is acceptable. For production, switch to the local hybrid approach.
 
 ---
 
@@ -151,23 +169,22 @@ For demo purposes, this is acceptable. For production, you must switch to the lo
 In `frontend/src/components/VoiceChat/VoiceChat.tsx`:
 
 ```typescript
-const QUERY_ENDPOINT = '/qa/llm-query';  // Prototype (Gemini)
-// OR
-const QUERY_ENDPOINT = '/qa/hybrid-query';  // Production (Local)
+const QUERY_ENDPOINT = '/qa/groq-query';    // Prototype (Groq) - FAST & ACCURATE
+const QUERY_ENDPOINT = '/qa/hybrid-query';    // Production (Local) - PRIVACY
 ```
 
 ---
 
 ## Troubleshooting
 
-### Gemini Not Working?
+### Groq Not Working?
 1. Check API key is set in `local.env`
-2. Check `/qa/health` shows `"gemini_available": true`
+2. Check `/qa/health` shows `"groq_available": true`
 3. Check server logs for errors
 
 ### Slow Responses?
-- Gemini free tier: ~500ms-1s
-- This is normal for free tier
+- Groq is FAST (~500ms)
+- If slow, check your internet connection
 
 ### Knowledge Base Not Found?
 - Ensure `backend/data/knowledge_base/combined_kb.json` exists
@@ -187,8 +204,8 @@ const QUERY_ENDPOINT = '/qa/hybrid-query';  // Production (Local)
 
 | Branch | Purpose |
 |--------|---------|
-| `master` | Current prototype with Gemini |
-| `hybrid-safe-point` | Pre-Gemini (local hybrid only) |
+| `master` | Current prototype with Groq |
+| `hybrid-safe-point` | Pre-Groq (local hybrid only) |
 
 To return to local-only: `git checkout hybrid-safe-point`
 
@@ -198,4 +215,4 @@ To return to local-only: `git checkout hybrid-safe-point`
 
 For issues or questions about this prototype, check:
 - Server logs: `python -m uvicorn app.main:app --log-level debug`
-- Gemini API status: https://status.ai.google.com
+- Groq API status: https://status.groq.com

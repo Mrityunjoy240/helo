@@ -8,7 +8,6 @@ import {
     CircularProgress,
     Chip,
     Alert,
-    Container,
     TextField
 } from '@mui/material';
 import {
@@ -39,33 +38,167 @@ const VoiceChat: React.FC<VoiceChatProps> = ({
     onNewChat,
 }) => {
     const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-    // Toggle between 'llm-query' (prototype with Gemini) and 'hybrid-query' (local hybrid)
-    const QUERY_ENDPOINT = '/qa/llm-query'; // Use '/qa/hybrid-query' for local hybrid
-    const [isRecording, setIsRecording] = useState(false);
+    const QUERY_ENDPOINT = '/qa/groq-query'; // PRODUCTION: Using Groq (Llama 3.3)
     const [messages, setMessages] = useState<Message[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const [textInput, setTextInput] = useState('');
     const [isSpeaking, setIsSpeaking] = useState(false);
-    const [health, setHealth] = useState<{ status: string; ollama_connected: boolean; gemini_available: boolean } | null>(null);
-    const [feedbackType, setFeedbackType] = useState<'up' | 'down' | null>(null);
-    const [sessionId, setSessionId] = useState<string | null>(null);
-    const [llmMode, setLlmMode] = useState(true); // Toggle for prototype
+    const [health, setHealth] = useState<{ status: string; ollama_connected: boolean; groq_available: boolean } | null>(null);
+    const [sessionId] = useState<string | null>(null);
+    const [sarvamError, setSarvamError] = useState<string | null>(null);
 
-    const voice = useVoice({ language: 'en-US' });
-    const noiseCanceller = useNoiseCancellation({
-        enabled: true,
-        noiseGateThreshold: -45,
-        highPassFrequency: 120,
-        noiseReduction: 0.4
+    const audioQueueRef = useRef<string[]>([]);
+    const isPlayingRef = useRef(false);
+
+    const playNextInQueue = useCallback(async () => {
+        if (audioQueueRef.current.length === 0) {
+            isPlayingRef.current = false;
+            setIsSpeaking(false);
+            return;
+        }
+
+        isPlayingRef.current = true;
+        setIsSpeaking(true);
+        const nextUrl = audioQueueRef.current.shift();
+
+        if (nextUrl) {
+            const audio = new Audio(nextUrl);
+            audio.onended = () => playNextInQueue();
+            audio.onerror = () => playNextInQueue();
+            try {
+                await audio.play();
+            } catch (err) {
+                console.error("Autoplay failed:", err);
+                playNextInQueue();
+            }
+        }
+    }, []);
+
+    const addToAudioQueue = useCallback((url: string) => {
+        audioQueueRef.current.push(url);
+        if (!isPlayingRef.current) {
+            playNextInQueue();
+        }
+    }, [playNextInQueue]);
+
+    const speakAnswer = useCallback(async (text: string, lang: string = 'en-IN') => {
+        if (!text.trim()) return;
+
+        try {
+            audioQueueRef.current = [];
+            setIsSpeaking(true);
+
+            const res = await fetch(`${API_BASE}/qa/tts`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text: text,
+                    language: lang,
+                    session_id: sessionId || "default"
+                }),
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                const audioUrl = `${API_BASE}${data.audio_url}`;
+                addToAudioQueue(audioUrl);
+            } else {
+                console.error("TTS generation failed");
+                setIsSpeaking(false);
+            }
+        } catch (error) {
+            console.error('Error in speakAnswer:', error);
+            setIsSpeaking(false);
+        }
+    }, [sessionId, API_BASE, addToAudioQueue]);
+
+    // Function to submit query
+    const handleQuery = useCallback(async (queryText?: string, lang: string = 'en-IN') => {
+        const textToSend = queryText || textInput;
+        if (!textToSend.trim() || isProcessing) return;
+
+        setIsProcessing(true);
+        setIsSpeaking(false);
+        audioQueueRef.current = [];
+
+        // Add user message to UI immediately
+        const userMessage: Message = { role: 'user', content: textToSend };
+        setMessages(prev => [...prev, userMessage]);
+
+        if (!queryText) setTextInput('');
+
+        try {
+            // Use Groq endpoint for prototype (high accuracy)
+            const res = await fetch(`${API_BASE}${QUERY_ENDPOINT}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    message: textToSend,
+                    conversation_id: conversationId
+                }),
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                const answer = data.answer;
+
+                // Add assistant message to UI
+                const assistantMessage: Message = { role: 'assistant', content: answer };
+                setMessages(prev => [...prev, assistantMessage]);
+
+                // Notify parent of conversation change
+                if (data.conversation_id && data.conversation_id !== conversationId) {
+                    onConversationChange?.(data.conversation_id);
+                }
+
+                // Auto-speak if voice input using detected language
+                if (queryText) {
+                    speakAnswer(answer, lang);
+                }
+            } else {
+                const errorMsg = 'Error: Could not process your request. Please try again.';
+                setMessages(prev => [...prev, { role: 'assistant', content: errorMsg }]);
+            }
+        } catch (error) {
+            console.error('Error processing query:', error);
+            setMessages(prev => [...prev, { role: 'assistant', content: 'Error: Could not process your request. Please try again.' }]);
+        } finally {
+            setIsProcessing(false);
+        }
+    }, [textInput, isProcessing, API_BASE, QUERY_ENDPOINT, conversationId, onConversationChange, speakAnswer]);
+
+    // Initialize voice hook with callback for auto-answer
+    const voice = useVoice({ 
+        language: 'auto', 
+        apiBase: API_BASE,
+        onTranscriptionComplete: (result) => {
+            console.log("Transcription complete callback:", result);
+            handleQuery(result.text, result.language);
+        }
     });
+
+    const noiseCanceller = useNoiseCancellation({
+        enabled: false, // Disabled by default to prevent gating low volume speech
+        noiseGateThreshold: -50,
+        highPassFrequency: 100,
+        noiseReduction: 0.3
+    });
+
+    const stopSpeaking = useCallback(() => {
+        setIsSpeaking(false);
+    }, []);
 
     useEffect(() => {
         if (!isSpeaking) return;
-        if (isRecording && (voice.transcript || voice.interimTranscript)) {
+        if (voice.isRecording && (voice.transcript || voice.interimTranscript)) {
             console.log('Barge-in detected! Stopping playback.');
             stopSpeaking();
         }
-    }, [voice.transcript, voice.interimTranscript, isSpeaking, isRecording]);
+    }, [voice.transcript, voice.interimTranscript, isSpeaking, voice.isRecording, stopSpeaking]);
 
     useEffect(() => {
         return () => {
@@ -100,7 +233,7 @@ const VoiceChat: React.FC<VoiceChatProps> = ({
 
     const loadConversationMessages = async (convId: string) => {
         try {
-            const res = await fetch(`${API_BASE}/conversations/${convId}`);
+            const res = await fetch(`${API_BASE}/api/conversations/${convId}`);
             if (res.ok) {
                 const data = await res.json();
                 const loadedMessages: Message[] = data.messages.map((m: { role: string; content: string }) => ({
@@ -114,149 +247,40 @@ const VoiceChat: React.FC<VoiceChatProps> = ({
         }
     };
 
-    const audioQueueRef = useRef<string[]>([]);
-    const isPlayingRef = useRef(false);
-
-    const playNextInQueue = useCallback(async () => {
-        if (audioQueueRef.current.length === 0) {
-            isPlayingRef.current = false;
-            setIsSpeaking(false);
-            return;
+    // Audio Context priming to bypass browser autoplay restrictions
+    const unlockAudio = useCallback(() => {
+        const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+        if (context.state === 'suspended') {
+            context.resume();
         }
-
-        isPlayingRef.current = true;
-        setIsSpeaking(true);
-        const nextUrl = audioQueueRef.current.shift();
-
-        if (nextUrl) {
-            const audio = new Audio(nextUrl);
-            audio.onended = () => playNextInQueue();
-            audio.onerror = () => playNextInQueue();
-            await audio.play();
-        }
-    }, []);
-
-    const addToAudioQueue = useCallback((url: string) => {
-        audioQueueRef.current.push(url);
-        if (!isPlayingRef.current) {
-            playNextInQueue();
-        }
-    }, [playNextInQueue]);
-
-    const speakAnswer = useCallback(async (text: string) => {
-        if (!text.trim()) return;
-
-        try {
-            audioQueueRef.current = [];
-            setIsSpeaking(true);
-
-            const res = await fetch(`${API_BASE}/qa/tts`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    text: text,
-                    session_id: sessionId || "default"
-                }),
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                const audioUrl = `${API_BASE}${data.audio_url}`;
-                addToAudioQueue(audioUrl);
-            } else {
-                console.error("TTS generation failed");
-                setIsSpeaking(false);
-            }
-        } catch (error) {
-            console.error('Error in speakAnswer:', error);
-            setIsSpeaking(false);
-        }
-    }, [sessionId, API_BASE, addToAudioQueue]);
-
-    const stopSpeaking = useCallback(() => {
-        setIsSpeaking(false);
+        // Play a tiny silent buffer to "prime" the system
+        const buffer = context.createBuffer(1, 1, 22050);
+        const source = context.createBufferSource();
+        source.buffer = buffer;
+        source.connect(context.destination);
+        source.start(0);
     }, []);
 
     const startRecording = async () => {
         if (isProcessing) return;
 
         try {
-            setIsRecording(true);
+            // Unlock audio system on the first user gesture (click)
+            unlockAudio();
             await voice.startRecording();
         } catch (error) {
             console.error('Error starting recording:', error);
-            setIsRecording(false);
         }
     };
+    
+    useEffect(() => {
+        setSarvamError(voice.error);
+    }, [voice.error]);
 
-    // Function to submit query
-    const handleQuery = async (queryText?: string) => {
-        const textToSend = queryText || textInput;
-        if (!textToSend.trim() || isProcessing) return;
-
-        setIsProcessing(true);
-        setIsSpeaking(false);
-        audioQueueRef.current = [];
-
-        // Add user message to UI immediately
-        const userMessage: Message = { role: 'user', content: textToSend };
-        setMessages(prev => [...prev, userMessage]);
-
-        if (!queryText) setTextInput('');
-
-        try {
-            // Use LLM endpoint for prototype, hybrid for local
-            const endpoint = llmMode ? '/qa/llm-query' : '/qa/hybrid-query';
-            const res = await fetch(`${API_BASE}${endpoint}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    message: textToSend,
-                    conversation_id: conversationId
-                }),
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                const answer = data.answer;
-
-                // Add assistant message to UI
-                const assistantMessage: Message = { role: 'assistant', content: answer };
-                setMessages(prev => [...prev, assistantMessage]);
-
-                // Notify parent of conversation change
-                if (data.conversation_id && data.conversation_id !== conversationId) {
-                    onConversationChange?.(data.conversation_id);
-                }
-
-                // Auto-speak if voice input
-                if (queryText) {
-                    speakAnswer(answer);
-                }
-            } else {
-                const errorMsg = 'Error: Could not process your request. Please try again.';
-                setMessages(prev => [...prev, { role: 'assistant', content: errorMsg }]);
-            }
-        } catch (error) {
-            console.error('Error processing query:', error);
-            setMessages(prev => [...prev, { role: 'assistant', content: 'Error: Could not process your request. Please try again.' }]);
-        } finally {
-            setIsProcessing(false);
-        }
-    };
-
-    const stopRecording = () => {
-        setIsRecording(false);
-        voice.stopRecording();
-
-        const spokenText = voice.transcript || voice.interimTranscript;
-        if (spokenText && spokenText.trim()) {
-            handleQuery(spokenText);
-        }
+    const stopRecording = async () => {
+        // Voice Activity Detection handles the automatic stopping
+        // But users can still click the button to stop manually
+        await voice.stopRecording();
     };
 
     const handleNewChat = () => {
@@ -279,14 +303,14 @@ const VoiceChat: React.FC<VoiceChatProps> = ({
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Chip
-                        label={health?.gemini_available ? "Gemini Active (Prototype)" : "Gemini Not Configured"}
-                        color={health?.gemini_available ? "info" : "warning"}
+                        label={health?.groq_available ? "Groq Active" : "Groq Not Configured"}
+                        color={health?.groq_available ? "info" : "warning"}
                         size="small"
                         sx={{ fontSize: '0.7rem' }}
                     />
                     <Chip
-                        label={health?.ollama_connected ? "Ollama OK" : "Ollama Offline"}
-                        color={health?.ollama_connected ? "success" : "error"}
+                        label="Sarvam STT/TTS"
+                        color={voice.error ? "error" : "success"}
                         size="small"
                         sx={{ fontSize: '0.7rem' }}
                     />
@@ -391,21 +415,28 @@ const VoiceChat: React.FC<VoiceChatProps> = ({
                         Voice recognition not supported. Please use Chrome, Edge, or Safari.
                     </Alert>
                 )}
+                
+                {/* Sarvam Error */}
+                {sarvamError && (
+                    <Alert severity="error" sx={{ mb: 2 }} onClose={() => setSarvamError(null)}>
+                        {sarvamError}
+                    </Alert>
+                )}
 
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                     {/* Mic Button */}
                     <IconButton
-                        onClick={isRecording ? stopRecording : startRecording}
+                        onClick={voice.isRecording ? stopRecording : startRecording}
                         disabled={!voice.isSupported || isProcessing}
                         sx={{
-                            bgcolor: isRecording ? '#d32f2f' : '#1a237e',
+                            bgcolor: voice.isRecording ? '#d32f2f' : '#1a237e',
                             color: 'white',
-                            '&:hover': { bgcolor: isRecording ? '#b71c1c' : '#0d47a1' },
+                            '&:hover': { bgcolor: voice.isRecording ? '#b71c1c' : '#0d47a1' },
                             width: 56,
                             height: 56,
                         }}
                     >
-                        {isRecording ? <MicOff /> : <Mic />}
+                        {voice.isRecording ? <MicOff /> : <Mic />}
                     </IconButton>
 
                     {/* Text Input */}
@@ -445,7 +476,7 @@ const VoiceChat: React.FC<VoiceChatProps> = ({
                 {(voice.transcript || voice.interimTranscript) && (
                     <Box sx={{ mt: 2, p: 2, bgcolor: '#fff3e0', borderRadius: 2 }}>
                         <Typography variant="caption" color="text.secondary">
-                            Listening: 
+                            {voice.isRecording ? "Listening:" : "Transcribed:"} 
                         </Typography>
                         <Typography variant="body2">
                             {voice.transcript}

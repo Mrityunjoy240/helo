@@ -1,13 +1,33 @@
 from pydantic_settings import BaseSettings
-from typing import List, Optional
+from typing import List, Optional, Any
 import os
-from groq import Groq
+import logging
+from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
+
+# Try to load local.env first, then .env
+if os.path.exists("local.env"):
+    load_dotenv("local.env")
+    logger.info("Loaded configuration from local.env")
+else:
+    load_dotenv(".env")
+    logger.info("Loaded configuration from .env")
+
+# Try to import Groq, gracefully degrade if not available
+try:
+    from groq import Groq
+    GROQ_AVAILABLE = True
+except ImportError:
+    GROQ_AVAILABLE = False
+    Groq = None
+    logger.warning("groq package not installed. Groq features will be unavailable.")
 
 class Settings(BaseSettings):
     # API Keys
     groq_api_key: str = os.getenv("GROQ_API_KEY", "")
     gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
-    speechmatics_api_key: str = os.getenv("SPEECHMATICS_API_KEY", "")
+    sarvam_api_key: str = os.getenv("SARVAM_API_KEY", "")
 
     # Auth Settings
     admin_username: str = os.getenv("ADMIN_USERNAME", "admin")
@@ -16,11 +36,8 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     
-    # Default voice ID for ElevenLabs (Rachel's voice)
-    # elevenlabs_voice_id: str = os.getenv("ELEVENLABS_VOICE_ID", "21m00Tcm4TlvDq8ikWAM")
-    
     # Direct Groq client initialization
-    groq_client: Optional[Groq] = None
+    groq_client: Optional[Any] = None
     
     # Gemini settings
     gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
@@ -37,8 +54,8 @@ class Settings(BaseSettings):
     
     # College information
     college_name: str = os.getenv("COLLEGE_NAME", "Dr. B.C. Roy Engineering College")
-    admissions_phone: str = os.getenv("ADMISSIONS_PHONE", "+91-343-2567890")
-    support_email: str = os.getenv("SUPPORT_EMAIL", "admissions@bcrec.ac.in")
+    admissions_phone: str = os.getenv("ADMISSIONS_PHONE", "0343-2501353")
+    support_email: str = os.getenv("SUPPORT_EMAIL", "info@bcrec.ac.in")
     
     class Config:
         env_file = ".env"
@@ -47,10 +64,14 @@ class Settings(BaseSettings):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
-        # Initialize Groq client if API key is available
-        # Groq is now optional - local Ollama is primary LLM
-        if self.groq_api_key:
-            self.groq_client = Groq(api_key=self.groq_api_key)
+        # Initialize Groq client if API key is available and library is installed
+        if GROQ_AVAILABLE and self.groq_api_key:
+            try:
+                self.groq_client = Groq(api_key=self.groq_api_key)
+                logger.info("Groq client initialized from API key")
+            except Exception as e:
+                logger.error(f"Failed to initialize Groq client: {e}")
+                self.groq_client = None
         else:
             self.groq_client = None
 

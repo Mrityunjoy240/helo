@@ -128,9 +128,6 @@ async def process_and_index_files(filenames: List[str]):
             json.dump(all_documents, f, ensure_ascii=False, indent=2)
         logger.info(f"Saved {len(all_documents)} documents to {storage_file}")
         
-        # The RAGService will automatically pick up the new documents
-        # when it's instantiated again for new requests
-        
     except Exception as e:
         logger.error(f"Error saving documents: {e}")
 
