@@ -37,7 +37,7 @@ const VoiceChat: React.FC<VoiceChatProps> = ({
     onConversationChange,
     onNewChat,
 }) => {
-    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    const API_BASE = import.meta.env.VITE_API_URL || '';
     const QUERY_ENDPOINT = '/qa/groq-query'; // PRODUCTION: Using Groq (Llama 3.3)
     const [messages, setMessages] = useState<Message[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);

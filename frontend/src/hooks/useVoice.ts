@@ -47,7 +47,7 @@ export const useVoice = (options: UseVoiceOptions = {}): UseVoiceReturn => {
 
   const stopResolverRef = useRef<((value: { text: string; language: string } | null) => void) | null>(null);
 
-  const API_BASE = options.apiBase || import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  const API_BASE = options.apiBase || import.meta.env.VITE_API_URL || '';
   const SILENCE_THRESHOLD = 0.015; // Volume threshold for silence
   const SILENCE_DURATION = options.silenceTimeout || 2000; // 2 seconds of silence
 

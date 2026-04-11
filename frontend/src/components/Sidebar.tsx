@@ -40,7 +40,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     onSelectConversation,
     onNewConversation,
 }) => {
-    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    const API_BASE = import.meta.env.VITE_API_URL || '';
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [conversationToDelete, setConversationToDelete] = useState<string | null>(null);
