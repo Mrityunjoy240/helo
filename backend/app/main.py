@@ -65,9 +65,14 @@ app.include_router(health.router, prefix="/health", tags=["health"])
 app.include_router(auth_routes.router, tags=["auth"])
 app.include_router(admin.router, prefix="/admin", tags=["admin"])
 
-@app.get("/")
-async def root():
-    return {"message": "College Voice Agent API is running!"}
+# Serve Frontend Static Files (if they exist)
+frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "dist")
+if os.path.exists(frontend_path):
+    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
+else:
+    @app.get("/")
+    async def root():
+        return {"message": "College Voice Agent API is running! (Frontend not built)"}
 
 if __name__ == "__main__":
     import uvicorn
