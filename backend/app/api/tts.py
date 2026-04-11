@@ -5,13 +5,15 @@ POST /qa/tts - Generate speech from text
 GET /qa/tts/voices - List available voices
 GET /qa/tts/languages - List supported languages
 """
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Response
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import Optional
 import logging
 import os
 import time
 import uuid
+import io
 
 from app.config import settings
 from app.services.sarvam_service import get_sarvam_service, init_sarvam_service
@@ -40,6 +42,60 @@ def _init_sarvam():
     if settings.sarvam_api_key:
         init_sarvam_service(settings.sarvam_api_key)
     return get_sarvam_service()
+
+
+@router.post("/tts-direct")
+async def text_to_speech_direct(request_data: TTSRequest, request: Request):
+    """
+    Convert text to speech and return audio bytes directly.
+    Bypasses disk I/O for maximum speed.
+    """
+    if not request_data.text.strip():
+        raise HTTPException(status_code=400, detail="Text cannot be empty")
+    
+    language = request_data.language or "en-IN"
+    speaker = request_data.speaker or "shubh"
+    
+    # Map languages to natural-sounding native speakers
+    language_speaker_map = {
+        "hi-IN": "aditya",
+        "hi": "aditya",
+        "bn-IN": "ritu",
+        "bn": "ritu",
+        "en-IN": "shubh"
+    }
+    
+    if language in language_speaker_map and not request_data.speaker:
+        speaker = language_speaker_map[language]
+
+    sarvam = _init_sarvam()
+    
+    if not sarvam.is_available():
+        raise HTTPException(status_code=503, detail="Sarvam service not available")
+    
+    session_id = request_data.session_id or getattr(request.state, 'session_id', 'default')
+    
+    try:
+        start_time = time.time()
+        result = await sarvam.text_to_speech(
+            text=request_data.text,
+            language=language,
+            speaker=speaker,
+            pace=request_data.pace or 1.0
+        )
+        
+        if not result.get("success"):
+            raise HTTPException(status_code=500, detail=result.get("error", "TTS failed"))
+        
+        audio_bytes = result["audio_bytes"]
+        elapsed = time.time() - start_time
+        logger.info(f"[{session_id}] TTS direct generated in {elapsed:.2f}s ({len(audio_bytes)} bytes)")
+        
+        return Response(content=audio_bytes, media_type="audio/wav")
+        
+    except Exception as e:
+        logger.error(f"TTS direct error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/tts", response_model=TTSResponse)

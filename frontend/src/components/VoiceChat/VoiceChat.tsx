@@ -88,7 +88,8 @@ const VoiceChat: React.FC<VoiceChatProps> = ({
             audioQueueRef.current = [];
             setIsSpeaking(true);
 
-            const res = await fetch(`${API_BASE}/qa/tts`, {
+            // Using faster direct endpoint that bypasses disk
+            const res = await fetch(`${API_BASE}/qa/tts-direct`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -101,8 +102,8 @@ const VoiceChat: React.FC<VoiceChatProps> = ({
             });
 
             if (res.ok) {
-                const data = await res.json();
-                const audioUrl = `${API_BASE}${data.audio_url}`;
+                const blob = await res.blob();
+                const audioUrl = URL.createObjectURL(blob);
                 addToAudioQueue(audioUrl);
             } else {
                 console.error("TTS generation failed");
